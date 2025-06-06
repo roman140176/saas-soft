@@ -1,25 +1,51 @@
 <template>
-  <n-card>
-    <n-space class="account-item">
-      <n-input v-model:value="labelInput" placeholder="Метки через ;" />
-      <n-select v-model:value="local.type" :options="typeOptions" class="select-"/>
-      <n-input v-model:value="local.login" placeholder="Login" />
-      <n-input v-if="local.type === 'Local'" v-model:value="local.password" type="password" show-password
-        placeholder="Пароль" />
+  <n-card class="account-item">
+    <n-grid item-responsive x-gap="12" y-gap="8":cols="12">
+      <n-gi span="3">
+        <n-input
+          v-model:value="labelInput"
+          placeholder="Метки через ;"
+          @blur="trySave"
+        />
+      </n-gi>
+      <n-gi span="2">
+      <n-select
+        v-model:value="local.type"
+        :options="typeOptions"
+        class="select-box"
+      />
+    </n-gi>
+    <n-gi :span="loginSpan">
+      <n-input
+        v-model:value="local.login"
+        placeholder="Логин"
+        :status="validation.login ? 'success' : 'error'"
+        @blur="trySave"
+      />
+    </n-gi>
+    <n-gi v-if="local.type === 'Local'" span="3">
+      <n-input        
+        v-model:value="local.password"
+        type="password"
+        show-password
+        placeholder="Пароль"
+        :status="validation.password ? 'success' : 'error'"
+        @blur="trySave"
+      />
+    </n-gi>
 
-      <n-space>
-        <n-button type="primary" @click="emitUpdate">Сохранить</n-button>
+
+      <n-gi span="1">
         <n-button type="error" @click="emitRemove">Удалить</n-button>
-      </n-space>
-    </n-space>
+      </n-gi>
+    </n-grid>
   </n-card>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
+import { useAccountForm } from '@/composables/useAccountForm'
 import type { Account } from '@/api/domains/accounts/accountTypes'
-import { parseLabel, stringifyLabel } from '@/api/domains/accounts/accountService'
-import { NCard, NInput, NSelect, NSpace, NButton } from 'naive-ui'
+import { computed } from 'vue'
 
 const props = defineProps<{
   account: Account
@@ -30,48 +56,25 @@ const emit = defineEmits<{
   (e: 'remove', id: string): void
 }>()
 
-const local = reactive({
-  id: props.account.id,
-  login: props.account.login,
-  password: props.account.password,
-  type: props.account.type
-})
-
-const labelInput = ref(stringifyLabel(props.account.label))
-
-function normalizePassword() {
-  if (local.type === 'LDAP') {
-    local.password = null
-  }
-}
-
-watch(
-  () => props.account,
-  (newVal) => {
-    Object.assign(local, newVal)
-    labelInput.value = stringifyLabel(newVal.label)
-    normalizePassword()
-  }
+const { local, labelInput, validation, trySave } = useAccountForm(
+  props.account,
+  (account) => emit('update', account)
 )
-
-const typeOptions = [
-  { label: 'LDAP', value: 'LDAP' },
-  { label: 'Local', value: 'Local' }
-]
-
-
-function emitUpdate() {
-  emit('update', {
-    ...local,
-    label: parseLabel(labelInput.value)
-  })
-}
 
 function emitRemove() {
   emit('remove', local.id)
 }
-</script>
 
+const typeOptions: { label: string; value: Account['type'] }[] = [
+  { label: 'LDAP', value: 'LDAP' },
+  { label: 'Local', value: 'Local' }
+]
+const loginSpan = computed(() => local.type === 'LDAP' ? 6 : 3)
+</script>
 <style scoped>
 
+.n-card.account-item .n-card__content{
+  display: grid!important;
+  grid-template-columns: minmax(200px,1fr)!important;
+}
 </style>
