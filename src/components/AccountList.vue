@@ -8,8 +8,9 @@
 </template>
 
 <script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
 import { useAccountStore } from '@/api/domains/accounts/accountStore'
-import AccountItem from './AccountItem.vue'
+const AccountItem = defineAsyncComponent(() => import('./AccountItem.vue'))
 
 const store = useAccountStore()
 </script>

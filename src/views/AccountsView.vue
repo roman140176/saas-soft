@@ -27,8 +27,9 @@
 </template>
 
 <script setup lang="ts">
+import { loadAsyncComponent } from '@/shared/utils/asyncComponent'
 import { useAccountStore } from '@/api/domains/accounts/accountStore'
-import AccountList from '@/components/AccountList.vue'
+const AccountList = loadAsyncComponent(() => import('@/components/AccountList.vue'))
 
 const store = useAccountStore()
 </script>
