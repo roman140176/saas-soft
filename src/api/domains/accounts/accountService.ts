@@ -1,6 +1,6 @@
 import type { LabelItem } from './accountTypes';
 
-export function parseLabel(input: string): LabelItem[] {
+export const parseLabel = (input: string): LabelItem[] => {
   return input
     .split(';')
     .map(s => s.trim())
@@ -8,6 +8,6 @@ export function parseLabel(input: string): LabelItem[] {
     .map(s => ({ text: s }));
 }
 
-export function stringifyLabel(labels: LabelItem[]): string {
+export const stringifyLabel = (labels: LabelItem[]): string => {
   return labels.map(l => l.text).join('; ');
 }

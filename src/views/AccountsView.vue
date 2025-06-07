@@ -5,8 +5,24 @@
       Учётные записи
       </h3>
       <n-button ghost size="large" @click="store.addAccount">+</n-button>
-      <AccountList />
     </n-space>
+    <n-card :bordered="false">
+     <n-grid item-responsive x-gap="12" y-gap="8" :cols="12">
+      <n-gi span="3">
+        Метки
+      </n-gi>
+      <n-gi span="2">
+        Тип Записи
+      </n-gi>
+      <n-gi span="3">
+        Логин
+      </n-gi>
+      <n-gi span="4">
+        Пароль
+      </n-gi>
+    </n-grid>
+    </n-card>
+      <AccountList />
   </div>
 </template>
 

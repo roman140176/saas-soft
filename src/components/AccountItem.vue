@@ -1,6 +1,6 @@
 <template>
   <n-card class="account-item">
-    <n-grid item-responsive x-gap="12" y-gap="8":cols="12">
+    <n-grid item-responsive x-gap="12" y-gap="8" :cols="12">
       <n-gi span="3">
         <n-input
           v-model:value="labelInput"

@@ -1,8 +1,8 @@
-import { toRefs, reactive, ref, watch } from 'vue'
-import type { Account, AccountType } from '@/api/domains/accounts/accountTypes'
+import { reactive, ref, watch } from 'vue'
+import type { Account} from '@/api/domains/accounts/accountTypes'
 import { parseLabel, stringifyLabel } from '@/api/domains/accounts/accountService'
 
-export function useAccountForm(props: Account, onUpdate: (account: Account) => void) {
+export const useAccountForm = (props: Account, onUpdate: (account: Account) => void) => {
   const labelInput = ref(stringifyLabel(props.label))
 
   const validation = reactive({
@@ -10,20 +10,26 @@ export function useAccountForm(props: Account, onUpdate: (account: Account) => v
     password: true
   })
 
-  function validate(): boolean {
+  const validate = (): boolean => {
     let valid = true
 
-    validation.login = !!props.login.trim() && props.login.trim().length <= 100
-    validation.password = props.type === 'Local'
-      ? !!props.password?.trim() && props.password.trim().length <= 100
-      : true
+    const loginLength = props.login.trim().length
+    validation.login = loginLength >= 3 && loginLength <= 100
+
+    if (props.type === 'Local') {
+      const passwordLength = props.password?.trim().length ?? 0
+      validation.password = passwordLength >= 3 && passwordLength <= 100
+    } else {
+      validation.password = true
+    }
 
     if (!validation.login || !validation.password) valid = false
 
     return valid
   }
 
-  function trySave() {
+
+  const trySave = () => {
     if (validate()) {
       onUpdate({
         ...props,
