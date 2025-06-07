@@ -18,7 +18,7 @@
     <n-gi :span="loginSpan">
       <n-input
         v-model:value="local.login"
-        placeholder="Логин"
+        placeholder="Логин макс. 100 символов"
         :status="validation.login ? 'success' : 'error'"
         @blur="trySave"
       />
@@ -28,7 +28,7 @@
         v-model:value="local.password"
         type="password"
         show-password
-        placeholder="Пароль"
+        placeholder="Пароль макс. 100 символов"
         :status="validation.password ? 'success' : 'error'"
         @blur="trySave"
       />
